@@ -4,3 +4,6 @@
 .Ruserdata
 *.csv
 *.jpeg
+*.log
+*.pdf
+*.synctex.gz
