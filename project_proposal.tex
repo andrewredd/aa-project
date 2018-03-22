@@ -1,0 +1,94 @@
+\documentclass[twoside,11pt]{article}
+
+% Any additional packages needed should be included after jmlr2e.
+% Note that jmlr2e.sty includes epsfig, amssymb, natbib and graphicx,
+% and defines many common macros, such as 'proof' and 'example'.
+%
+% It also sets the bibliographystyle to plainnat; for more information on
+% natbib citation styles, see the natbib documentation, a copy of which
+% is archived at http://www.jmlr.org/format/natbib.pdf
+
+\usepackage{jmlr2e}
+%\usepackage{parskip}
+
+% Definitions of handy macros can go here
+\newcommand{\dataset}{{\cal D}}
+\newcommand{\fracpartial}[2]{\frac{\partial #1}{\partial  #2}}
+% Heading arguments are {volume}{year}{pages}{submitted}{published}{author-full-names}
+
+% Short headings should be running head and authors last names
+\ShortHeadings{95-845: AAMLP Proposal}{Lastname and Lastname}
+\firstpageno{1}
+
+\begin{document}
+
+\title{Heinz 95-845: Project Proposal}
+
+\author{\name Firstname Lastname \email ANDREWID/email@address.edu \\
+       \addr Heinz College\\
+       Carnegie Mellon University\\
+       Pittsburgh, PA, United States \\
+       \AND
+       \name Firstname Lastname \email ANDREWID/email@address.edu \\
+       \addr Heinz College\\
+       Carnegie Mellon University\\
+       Pittsburgh, PA, United States}
+\maketitle
+
+
+\section{Project Details}
+Your project will involve the use of the machine learning pipeline. This is an opportunity for you to explore some interest you have in an applied domain and the machine learning suitable for the task.
+
+The purpose of the project is to conduct an analysis that is novel in some way. The novelty could be in terms of development of machine learning, the assessment of a wide variety of machine learning algorithms at a focused task, or the application of a single machine learning algorithm that solves a real societal problem.
+
+A list of exemplary papers (in health care) are available in the Possible Data Sets slides on Canvas. The examples may be helpful in identifying how you conduct your study and prepare your write-up. A much larger list of public domain data sets is available at the url: \url{https://github.com/awesomedata/awesome-public-datasets}. We recommend you do not choose a fully pre-processed data set. We do recommend you choose a data set that will fit in memory (or that can be run on your laptop) so that your machine learning process will be manageable.
+
+The proposal for the project is due on \textbf{March 26th}. Please use this TeX template in Section \ref{details} and submit on Canvas \textbf{a link to a git repository with instructions on access (particularly if it is a private repository)}. You may find the online editors ShareLatex or Overleaf helpful in drafting your TeX file. However, in order to learn git version control (which will help you checkpoint during your project), we require the submission to be in a git repository.
+
+\subsection{Objectives}
+The objective of this project proposal is to generate a proposal for your course project. It should be concise and describe the following components:
+\begin{itemize}
+\item Construction and description of a research framework that motivates the use of machine learning for your task
+\item Presentation of machine learning techniques appropriate for the task
+\item Description of the data
+\item Description of possible limitations of the study
+\item Description of the likely analysis outcomes and their impact.
+\end{itemize}
+
+\subsection{Parameters}
+The project will be conducted in pairs. \textbf{If you intend to work individually, because of data privacy, computational frameworks, or other reasons, you must use the link on Canvas to do so prior to March 3rd.}.
+
+The project you propose should be different from an existing analysis either in the literature or from other class projects of yours. It is permissible to perform an analysis in data that warrants a second analysis. My guideline here is that the analysis must be greater than 50\% new. To get approval for these studies, please describe the existing project and highlight the difference and contribution of this class's project. Provide any relevant documents (proposals, manuscripts, and/or citations). If the project has overlap with work from another course, you must also provide documented approval from the other faculty member/research collaborator(s). 
+
+Your team is free to use programming language(s) of your choosing, however, we may only be able to support your endeavors in R.
+
+\section{Proposal Details (10 points)} \label{details}
+Please provide information for the following fields. Your proposal write-up should be less than 2 pages.
+
+\subsection{What is your proposed analysis? What are the likely outcomes?}
+
+
+\subsection{Why is your proposed analysis important?}
+
+
+\subsection{How will your analysis contribute to existing work? Provide references.}
+
+
+\subsection{Describe the data. Please also define Y outcome(s), U treatment, V covariates, W population as applicable.}
+
+
+\subsection{What evaluation measures are appropriate for the analysis? Which measures will you use?}
+
+
+\subsection{What study design, pre-processing, and machine learning methods do you intend to use? Justify that the analysis is of appropriate size for a course project.}
+
+
+\subsection{What are possible limitations of the study?}
+
+
+\bibliography{}
+%\appendix
+%\section*{Appendix A.}
+%Some more details about those methods, so we can actually reproduce them.
+
+\end{document}
