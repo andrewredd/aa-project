@@ -67,12 +67,13 @@ Please provide information for the following fields. Your proposal write-up shou
 
 \subsection{What is your proposed analysis? What are the likely outcomes?}
 
-We would like to predict whether a Chicago SRW future is overvalued or undervalued on a given day based on weather data sources. We propose to collect and clean weather data from several major wheat growing areas and use a RNN with an LSTM layer to predict daily over/undervaluation.  
+We would like to predict whether a Chicago SRW future is overvalued or undervalued on a given day based on weather data sources. We propose to collect and clean weather data from several major wheat growing areas and use a RNN with an LSTM layer to predict daily over/undervaluation. 
+
+Because the future price today is already likely a strong predictor of final future value, we predict the difference on a given day from the final future value. If our selection of weather covariates and modeling techniques control for additional factors not accounted for by other participants in the futures market, the model would expose unrealized gains.  
 
 \subsection{Why is your proposed analysis important?}
 
-Hasdf;lkjdsaf ;lkjadsf;lkj
-
+Speculation on commodity futures is extremely risky but does come with a strong upside if it can be moderately improved above random. Such a model if successful would provide an abitrage opprotunity to an investor. 
 
 \subsection{How will your analysis contribute to existing work? Provide references.}
 
@@ -80,11 +81,43 @@ asd;fkljasd;dlfkajsd;flkasjf;kladskfjf;sdlkj
 
 \subsection{Describe the data. Please also define Y outcome(s), U treatment, V covariates, W population as applicable.}
 
+\subsubsection{Outcome Variable (Y)}
+Final Future Price - Closing future price
+
+\subsubsection{Covariates Variables (V)}
+
+Final Future Closing Date - Closing future date
+Closing future price
+Daily volume of future
+
+\subsubsection{Example data points include}
+\begin{itemize}
+  \item Average temperature in wheat growing region 
+  \item Distance from historic temperatures (1.2 SDs higher than historic temperatures)
+  \\
+  \item Average precipitation in wheat growing region
+  \item Distance from historic precipitation
+  \\
+  \item Average humidity in wheat growing region
+  \item Distance from historic humidity
+  \\
+  \item Average wind speed in wheat growing region
+  \item Distance from historic wind speed
+  \\
+  \item Average wind speed in wheat growing region
+  \item Distance from historic wind speed
+  \\
+  \item Average barometric pressure in wheat growing region
+  \item Mode weather condition in the wheat growing region
+\end{itemize}
+
 
 \subsection{What evaluation measures are appropriate for the analysis? Which measures will you use?}
 
+The analysis is designed to account for the timing of events and prices to predict the difference in price. We will investigate RNNs and other time-series prediction methods (ARIMA, etc.). 
 
 \subsection{What study design, pre-processing, and machine learning methods do you intend to use? Justify that the analysis is of appropriate size for a course project.}
+
 
 
 \subsection{What are possible limitations of the study?}
