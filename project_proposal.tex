@@ -76,7 +76,8 @@ Hasdf;lkjdsaf ;lkjadsf;lkj
 
 \subsection{How will your analysis contribute to existing work? Provide references.}
 
-asd;fkljasd;dlfkajsd;flkasjf;kladskfjf;sdlkj
+While there are references to using neural nets to predict futures prices, we have not come across any published papers that incorporate weather data in their models.  There is a good chance this is due them being proprietary as individuals would not necessarily want to publish.  
+
 
 \subsection{Describe the data. Please also define Y outcome(s), U treatment, V covariates, W population as applicable.}
 
@@ -88,6 +89,10 @@ asd;fkljasd;dlfkajsd;flkasjf;kladskfjf;sdlkj
 
 
 \subsection{What are possible limitations of the study?}
+
+Possible limitations that we foresee in the study is in the 'stitching' together of the futures contract data.  Because to analyize longer-term futures prices, one needs to concatinate various individual futures contracts.  In order to concatinate the contracts, one needs to select the appropriate day (roll-day) and any adjustments to price to eliminate error-inducing jumps in the continuous contract price history.  The free dataset that we are using provides one roll-day/price-adjustment rule, while the professional dataset (paid subscription needed) offers 14 different rules.  Ideally, one would incorporate a rule that matches their actual roll strategy based on their own trading.  So, we are not sure affect on only having one roll-date/price-adjustment rule available to us will affect continuous contract data we are using and thus our model.  
+
+
 
 
 \bibliography{}
