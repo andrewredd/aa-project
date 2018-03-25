@@ -35,33 +35,6 @@
        Pittsburgh, PA, United States}
 \maketitle
 
-
-\section{Project Details}
-Your project will involve the use of the machine learning pipeline. This is an opportunity for you to explore some interest you have in an applied domain and the machine learning suitable for the task.
-
-The purpose of the project is to conduct an analysis that is novel in some way. The novelty could be in terms of development of machine learning, the assessment of a wide variety of machine learning algorithms at a focused task, or the application of a single machine learning algorithm that solves a real societal problem.
-
-A list of exemplary papers (in health care) are available in the Possible Data Sets slides on Canvas. The examples may be helpful in identifying how you conduct your study and prepare your write-up. A much larger list of public domain data sets is available at the url: \url{https://github.com/awesomedata/awesome-public-datasets}. We recommend you do not choose a fully pre-processed data set. We do recommend you choose a data set that will fit in memory (or that can be run on your laptop) so that your machine learning process will be manageable.
-
-The proposal for the project is due on \textbf{March 26th}. Please use this TeX template in Section \ref{details} and submit on Canvas \textbf{a link to a git repository with instructions on access (particularly if it is a private repository)}. You may find the online editors ShareLatex or Overleaf helpful in drafting your TeX file. However, in order to learn git version control (which will help you checkpoint during your project), we require the submission to be in a git repository.
-
-\subsection{Objectives}
-The objective of this project proposal is to generate a proposal for your course project. It should be concise and describe the following components:
-\begin{itemize}
-\item Construction and description of a research framework that motivates the use of machine learning for your task
-\item Presentation of machine learning techniques appropriate for the task
-\item Description of the data
-\item Description of possible limitations of the study
-\item Description of the likely analysis outcomes and their impact.
-\end{itemize}
-
-\subsection{Parameters}
-The project will be conducted in pairs. \textbf{If you intend to work individually, because of data privacy, computational frameworks, or other reasons, you must use the link on Canvas to do so prior to March 3rd.}.
-
-The project you propose should be different from an existing analysis either in the literature or from other class projects of yours. It is permissible to perform an analysis in data that warrants a second analysis. My guideline here is that the analysis must be greater than 50\% new. To get approval for these studies, please describe the existing project and highlight the difference and contribution of this class's project. Provide any relevant documents (proposals, manuscripts, and/or citations). If the project has overlap with work from another course, you must also provide documented approval from the other faculty member/research collaborator(s). 
-
-Your team is free to use programming language(s) of your choosing, however, we may only be able to support your endeavors in R.
-
 \section{Proposal Details (10 points)} \label{details}
 Please provide information for the following fields. Your proposal write-up should be less than 2 pages.
 
@@ -87,9 +60,9 @@ Final Future Price - Closing future price
 
 \subsubsection{Covariates Variables (V)}
 
-Final Future Closing Date - Closing future date
-Closing future price
-Daily volume of future
+- Final Future Closing Date - Closing future date\\  
+- Closing future price\\
+- Daily volume of future
 
 \subsubsection{Example data points include}
 \begin{itemize}
@@ -101,9 +74,6 @@ Daily volume of future
   \\
   \item Average humidity in wheat growing region
   \item Distance from historic humidity
-  \\
-  \item Average wind speed in wheat growing region
-  \item Distance from historic wind speed
   \\
   \item Average wind speed in wheat growing region
   \item Distance from historic wind speed
@@ -123,7 +93,8 @@ The analysis is designed to account for the timing of events and prices to predi
 
 \subsection{What are possible limitations of the study?}
 
-Possible limitations that we foresee in the study is in the 'stitching' together of the futures contract data.  Because to analyze longer-term futures prices, one needs to concatenate various individual futures contracts.  In order to concatenate the contracts, one needs to select the appropriate day (roll-day) and any adjustments to price to eliminate error-inducing jumps in the continuous contract price history.  The free dataset that we are using provides one roll-day/price-adjustment rule, while the professional dataset (paid subscription needed) offers 14 different rules.  Ideally, one would incorporate a rule that matches their actual roll strategy based on their own trading.  So, we are not sure affect on only having one roll-date/price-adjustment rule available to us will affect continuous contract data we are using and thus our model.  
+Possible limitations that we foresee in the study is in the 'stitching' together of the futures contract data.  Because to analyze longer-term futures prices, one needs to concatenate various individual futures contracts.  In order to concatenate the contracts, one needs to select the appropriate day (roll-day) and any adjustments to price to eliminate error-inducing jumps in the continuous contract price history.  The free dataset that we are using provides one roll-day/price-adjustment rule, while the professional dataset (paid subscription needed) offers 14 different rules.  Ideally, one would incorporate a rule that matches their actual roll strategy based on their own trading.  So, we are not sure affect on only having one roll-date/price-adjustment rule available to us will affect continuous contract data we are using and thus our model.\\
+\indent Another limitation would be how much of the weather information we are adding is already incorporated in the futures price, especially as we are using daily closing prices.
 
 
 
