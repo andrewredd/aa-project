@@ -36,7 +36,6 @@
 \maketitle
 
 \section{Proposal Details (10 points)} \label{details}
-Please provide information for the following fields. Your proposal write-up should be less than 2 pages.
 
 \subsection{What is your proposed analysis? What are the likely outcomes?}
 
@@ -68,16 +67,12 @@ Final Future Price - Closing future price
 \begin{itemize}
   \item Average temperature in wheat growing region 
   \item Distance from historic temperatures (1.2 SDs higher than historic temperatures)
-  \\
   \item Average precipitation in wheat growing region
   \item Distance from historic precipitation
-  \\
   \item Average humidity in wheat growing region
   \item Distance from historic humidity
-  \\
   \item Average wind speed in wheat growing region
   \item Distance from historic wind speed
-  \\
   \item Average barometric pressure in wheat growing region
   \item Mode weather condition in the wheat growing region
 \end{itemize}
@@ -93,7 +88,7 @@ The analysis is designed to account for the timing of events and prices to predi
 
 \subsection{What are possible limitations of the study?}
 
-Possible limitations that we foresee in the study is in the 'stitching' together of the futures contract data.  Because to analyze longer-term futures prices, one needs to concatenate various individual futures contracts.  In order to concatenate the contracts, one needs to select the appropriate day (roll-day) and any adjustments to price to eliminate error-inducing jumps in the continuous contract price history.  The free dataset that we are using provides one roll-day/price-adjustment rule, while the professional dataset (paid subscription needed) offers 14 different rules.  Ideally, one would incorporate a rule that matches their actual roll strategy based on their own trading.  So, we are not sure affect on only having one roll-date/price-adjustment rule available to us will affect continuous contract data we are using and thus our model.\\
+Possible limitations that we foresee in the study is in the 'stitching' together of the futures contract data.  To analyze longer-term futures prices, one needs to concatenate various individual futures contracts by selecting the appropriate day (roll-day) and any adjustments to price to eliminate error-inducing jumps in the continuous contract price history.  The free dataset that we are using provides one roll-day/price-adjustment rule, while the professional dataset (paid subscription needed) offers 14 different rules.  Ideally, one would incorporate a rule that matches their actual roll trading strategy.  So, we are not sure how having one roll-date/price-adjustment rule available to us will affect the continuous contract data we are using and thus our model.\\
 \indent Another limitation would be how much of the weather information we are adding is already incorporated in the futures price, especially as we are using daily closing prices.
 
 
