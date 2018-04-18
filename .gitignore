@@ -6,5 +6,6 @@
 *.jpeg
 *.log
 *.pdf
+*.txt
 *.synctex.gz
 .ipynb_checkpoints/*
