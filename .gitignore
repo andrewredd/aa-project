@@ -10,3 +10,4 @@
 *.txt
 *.synctex.gz
 .ipynb_checkpoints/*
+.DS_Store
