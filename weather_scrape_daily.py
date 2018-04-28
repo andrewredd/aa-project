@@ -9,6 +9,9 @@ from queue import Queue
 from threading import Thread
 from time import time, sleep
 import logging
+import glob
+import pandas as pd
+
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logging.getLogger('requests').setLevel(logging.CRITICAL)
@@ -18,11 +21,10 @@ from urllib.request import urlopen
 # Number of attempts to download data
 MAX_ATTEMPTS = 6
 # HTTPS here can be problematic for installs that don't have Lets Encrypt CA
-# SERVICE = "http://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?"
 SERVICE = "http://mesonet.agron.iastate.edu/cgi-bin/request/daily.py?"
 
-def download_data(site, service):
 
+def download_data(site, service):
     faaid = site['properties']['sid']
     sitename = site['properties']['sname']
     uri = '%s&stations=%s' % (service, faaid)
@@ -101,8 +103,19 @@ def main():
             queue.put((site, service))
 
         # Causes the main thread to wait for the queue to finish processing all the tasks
-        queue.join()
-        print('Took {}'.format(time() - ts))
+    queue.join()
+    print('Took {}'.format(time() - ts))
+
+    gl = glob.glob("Daily/*.txt")
+    data_daily = []
+
+    for i in gl:
+        d_test = pd.read_csv(i, parse_dates=["day"], na_values=["None"])
+        if len(d_test) >= 4748:
+            data_daily.append(d_test)
+
+    final = pd.concat(data_daily)
+    final.to_csv('aggregated_data_daily.csv')
 
 
 if __name__ == '__main__':
