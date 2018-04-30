@@ -56,6 +56,7 @@ a.out = amelia(x = data_unimput %>% data.frame(),
                idvars = c('X1'), 
                cs = 'station', 
                ts = 'day', 
+               emburn = c(5,100),
                m=5)
 
 
