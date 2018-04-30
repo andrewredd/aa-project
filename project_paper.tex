@@ -55,7 +55,7 @@ The future is risky. Individuals have a heterogeneous perception of future outco
 Wheat is the third most-planted crop in the US. It first began trading on the futures market in 1877. Hard Red Winter Wheat is an important component of the US wheat market, being integral for most baking needs throughout the US. HRW wheat is primarily grown a relatively small geographic area across Oklahoma, Kansas and Nebraska. (\cite{CME}) As a result HRW wheat's risk profile is relatively less diversified when compared to other commodities. This geographically tight growing area makes HRW a good target for weather-based futures prediction. 
 
 \subsection{Paper Structure}
-In Section \ref{background}, we define key topics in futures trading. In Section \ref{model}, we provide a high-level overview of Recurrent Neural Nets (RNNs) and RNN layers such as Long-Short Term Memory (LSTM) and Gated Recurrent Units (GRU). Section \ref{experiment} describes the data sources and data preparation that lead up to the RNN model.  In Section \ref{results}, we discuss the efficiency of our prediction in terms of RMSE and provide a small simulation of outcomes if we were to take the position suggested by our model over the test period. 
+In Section \ref{background}, we define key topics in futures trading. In Section \ref{model}, we provide a high-level overview of Recurrent Neural Nets (RNNs) and RNN layers such as Long-Short Term Memory (LSTM) and Gated Recurrent Units (GRU). Section \ref{experiment} describes the data sources and data preparation that lead up to the RNN model.  In Section \ref{results}, we discuss the efficiency of our predictions in terms of MSE. 
 
 \section{Background} \label{background}
 
@@ -75,7 +75,7 @@ In Section \ref{background}, we define key topics in futures trading. In Section
   Investors often wish to maintain a position (long/short) in a given commodity for a longer period of time than the specified contract duration. In this case the contract is rolled over "by closing the initial contract and opening a new longer-term contract for the same underlying asset at the then-current market price." \cite{InvestopediaRF}
 
   While many other strategies exist in futures trading, the defined long and short positions provide sufficent context for the motivation behind a better mechanism to predict the futures price.
-% 
+ 
 \subsection{Weather's Impact on Wheat}
 	
 	Wheat quality has many measures such as protein content, grain structure, and grain weight. These quality measures are affected by a variety of variables such as soil quality, grain type, agronomy interventions, and growing climate conditions. Many studies have tried to model these effects in an effort to predict wheat yield within a time horizon to improve yield through intervention. \cite{Gooding2017} found that 70\% of crop variation could be accounted for by wheat type, fertilizer application, and precipitation during the winter and spring. Their model could account 90\% of the annual variation after including summer temperature. Further studies have shown that daily fluctuation measurements are critical to properly predicting wheat outcomes (\cite{Nuttall2017} \cite{Mearns1996})
@@ -166,28 +166,41 @@ We assume that all non observed factors (fertilizer, soil quality, etc) are on a
 	
 	Finally, the data was transformed into wide format in preparation for the merge with the futures data. 
 
+\subsection{Futures Data}
+ 
+We retrieved the futures prices directly from the Chicago Mercantile Exchange. The raw data form of the output was high, low, close, volumn and adjusted close. We decided to use the three month rollover strategy as a it would have less volatility in price due to contract changes (i.e. three months prior to contract termination, the current contract is sold and the next contract period is purchased)
 
-Futures Data Cleaning
-  Pulling from CME
-    What was the form of the raw data?
-    What data cleaning did you conduct?
-    How did you conduct it?
-    Did you conduct cross-validation?
+The data output was relatively clean coming out of the CME API. We made minor changes to date and price format to work with our models. A full picture of our data pipeline is shown in figure \ref{fig:datapipeline}. We continue our discussion of the later end of the data pipeline with the results in section \ref{results}.
 
-Describe the pipeline from raw data to processed data. Figures can be helpful. What assumptions did you make? How did you deal with missing data? Do not place interpretations here except possibly for short justification phrases. Longer discussions about the assumption you made go in the Discussion Section.
+	\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=5in]{DataPipeline.png}
+	\caption{Data pipeline overview}
+	\label{fig:datapipeline}
+\end{figure}
 
 \subsection{Feature Choices}
-What features were used? What conversions were necessary? What assumptions (e.g. i.i.d.) are made? with how you might have converted the raw data into features that were used in your algorithm.
 
-  Moving Average
-  Normalization
-  Not IID because of the sequential nature of the sliding window
-  All of the features are derivatives of the current conditions. Therefore prediction is possible.
+Many traders will use technical analysis in order to capture an ongoing trend in the financial product. We used Open-High-Low-Close (OHLC) average, daily percent change, and 50, 100, and 200 moving averages in order to communicate such trends.  
 
-  Validate - Don't let it get shuffled unless its on the fold
-
+In this phase we also transformed our data into a sequence appropriate for an RNN. This sequence involved taking a sliding window along our dataset. The sliding window size we implemented was 44 working days (~ 2 mo.). We then crafted our target as a look-ahead variables 22 working days into the future. The output to this process is a matrix shaped (\# of windows (nrows - window size - look-ahead value), window size, ncols). The sequential nature of the input means that our inputs are no longer i.i.d., but as we are concerned with sequence of events this seems to be appropriate. In our baseline model (feed forward neural net) we do not perform this transformation and assume i.i.d. observations. 
 
 \subsection{Comparison Methods}
+
+In order to 
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{lclc}
+		Method & Outcome (\%) \\
+		\hline \\[-11pt]
+		Us & 20.1 \\
+		Baseline & 18.2 \\ \hline
+	\end{tabular}
+	\label{tab:example}
+	\caption{Outcome by method used. These are our results.}
+\end{table}
+
 To evaluate your model, often times you will compare against existing models.
 If so, include them here with a brief description, citation, and any tweaks you made for your experiment.
 
@@ -200,7 +213,19 @@ difference
 \subsection{Evaluation Criteria}
 
 RMSE
-Profit calculation overview
+
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{lclc}
+		Method & Outcome (\%) \\
+		\hline \\[-11pt]
+		Us & 20.1 \\
+		Baseline & 18.2 \\ \hline
+	\end{tabular}
+	\label{tab:example}
+	\caption{Outcome by method used. These are our results.}
+\end{table}
   Show graph of profit as a function of day based on decisions. Current Price method will be a flat line at zero.
   On the current day, we purchase a futures contract and hold it until the 21 days passes and then sell the contract where all gains or losses are frozen on the transaction.
   Sum of the wins and losses, results in an overall loss or gain on the market.
