@@ -187,62 +187,23 @@ In this phase we also transformed our data into a sequence appropriate for an RN
 
 \subsection{Comparison Methods}
 
-In order to 
+In order to validate an improved prediction we take today's closing price and use that as the best prediction for the future closing price. This comparison is on a rolling basis and thus will not equate to the actual future contract final price, but serves a proxy to see how the market already performs  in predicting the price one month out. 
 
-\begin{table}[htbp]
-	\centering
-	\begin{tabular}{lclc}
-		Method & Outcome (\%) \\
-		\hline \\[-11pt]
-		Us & 20.1 \\
-		Baseline & 18.2 \\ \hline
-	\end{tabular}
-	\label{tab:example}
-	\caption{Outcome by method used. These are our results.}
-\end{table}
-
-To evaluate your model, often times you will compare against existing models.
-If so, include them here with a brief description, citation, and any tweaks you made for your experiment.
-
-Current Period Price - Profit will be zero because we will never speculate on price
-difference
-
-  Talk about mean loss/gain and variance in taht daily gain
-  Talk about market volatility in the test period vs the train/validate period
+As our comparison methods, we implement a feed-forward (FF) neural network (NN), a fully-connected RNN where the output is to be fed back to input, a gated recurrent unit (GRU) and a long-short term memory (LSTM). The later three NNs being implementations of a recurrent neural network. For each addition of data (futures only, futures and weather, and futures, weather and wheat ETFs) we run the four methods above and compare to the MSE values of our baseline. We anticipated the RNN implementations to outperform FF and baseline. We further anticipated that the addition of more data sources would improve model performance. 
 
 \subsection{Evaluation Criteria}
 
-RMSE
-
-
-\begin{table}[htbp]
-	\centering
-	\begin{tabular}{lclc}
-		Method & Outcome (\%) \\
-		\hline \\[-11pt]
-		Us & 20.1 \\
-		Baseline & 18.2 \\ \hline
-	\end{tabular}
-	\label{tab:example}
-	\caption{Outcome by method used. These are our results.}
-\end{table}
-  Show graph of profit as a function of day based on decisions. Current Price method will be a flat line at zero.
-  On the current day, we purchase a futures contract and hold it until the 21 days passes and then sell the contract where all gains or losses are frozen on the transaction.
-  Sum of the wins and losses, results in an overall loss or gain on the market.
-
-explain why these are most useful measures of the outcome.
+Since the variable, that we are considering is real valued constrained between zero and one (normalized future price) we use NNs in this context as a regression model. A common error metric is mean squared error (the variance of model residuals). Our definition of a successful model is therefore a model that produces a small variance of error over time. Such a model would likely outperform the model over the long-term. 
 
 \section{Results} \label{results}
 
-Compare the models' performance in terms of RMSE
-Develop profit calculations here
+\subsection{Futures Only}
 
-Present the results here.
-Do not describe how the results were obtained.
-Those descriptions belong in Section \ref{experiment}.
 
-Typically there are multiple parts and subparts of your study.
-Use subsections to report the results.
+
+\subsection{Futures and Weather}
+
+\subsection{Futures, Weather, and Wheat-Related ETFs}
 
 \subsection{Results on Application A}
 
