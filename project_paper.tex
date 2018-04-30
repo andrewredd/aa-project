@@ -170,14 +170,23 @@ We assume that all non observed factors (fertilizer, soil quality, etc) are on a
  
 We retrieved the futures prices directly from the Chicago Mercantile Exchange. The raw data form of the output was high, low, close, volumn and adjusted close. We decided to use the three month rollover strategy as a it would have less volatility in price due to contract changes (i.e. three months prior to contract termination, the current contract is sold and the next contract period is purchased)
 
-The data output was relatively clean coming out of the CME API. We made minor changes to date and price format to work with our models. A full picture of our data pipeline is shown in figure \ref{fig:datapipeline}. We continue our discussion of the later end of the data pipeline with the results in section \ref{results}.
+The data output was relatively clean coming out of the CME API. We made minor changes to date and price format to work with our models.
 
-	\begin{figure}[htbp]
+\subsection{Combining and Splitting}
+
+A major decision was made at this step of the data pipeline to only include weather data during days that we had changing futures data. (working days) This decision reduced our weather data sequentiality in exchange for avoiding imputation of weekend values of futures data. Future iterations of this work would would cross validate outcomes by using carry forward of pull back imputation to either use Friday or Monday values as proxy for weekend futures data. 
+
+Three-way split
+
+A full picture of our data pipeline is shown in figure \ref{fig:datapipeline}. We continue our discussion of the later end of the data pipeline with the results in section \ref{results}.
+
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=5in]{DataPipeline.png}
 	\caption{Data pipeline overview}
 	\label{fig:datapipeline}
 \end{figure}
+
 
 \subsection{Feature Choices}
 
@@ -199,67 +208,125 @@ Since the variable, that we are considering is real valued constrained between z
 
 \subsection{Futures Only}
 
+The subset of models that involved only futures data were high performers in our experiments. The baseline carry forward for this subset of data was 0.0014. The results of each model is shown in figure \ref{tab:futuresonly}.
 
+\begin{table}[h!]
+	\begin{center}
+		\begin{tabular}{ccc}
+		    Method & Train MSE & Test MSE \\
+		\hline \\[-11pt]
+		Feed-Forward & 0.000005 & 0.000039 \\
+		Simple RNN & 0.007647 & 0.097884 \\ 
+	    GRU & 0.018110 & 0.160860 \\
+		LSTM & 0.017986 & 0.160441 \\
+		\hline
+		\end{tabular}
+	  \label{tab:futuresonly}
+		\caption{Training and testing MSE of neural network types over futures only data}
+	\end{center}
+\end{table}
+
+The feed-forward network had very high precision and beat the baseline over the same period. However, the RNN implementations failed to beat the baseline and under LSTM and GRU implementations the test MSE was lower than the train MSE. We attributed this very non-intuitive result to the high variance of the futures price in our training set and the relatively low volatility in our test set. This is visualized in figure \ref{fig:futuresonlygraph}. 
+
+%The test set begins in October, 3rd 1990.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=5in]{futuresonlygraph.png}
+	\caption{Model confusion over major spikes in futures price. These spikes occured more in the training period (pre-October 1990) }
+	\label{fig:futuresonlygraph}
+\end{figure}
+
+We note that the model is not able to adequately account for the extreme spikes in the futures price. As a result the model would perform better during times of relatively low variance throughout the market. While finding is not surprising, it underscores the difficulty of predicting the face of unanticipated increases and decreases in the market.   
 
 \subsection{Futures and Weather}
 
-\subsection{Futures, Weather, and Wheat-Related ETFs}
+These models incorporated both futures and weather data beginning in 2005. We also ran the futures only data over the same period as an additional baseline. We intuitively anticipated that the addition of more data would add greater richness to the prediction. The baseline MSE for this time period is 0.0034. The results are shown in table \ref{tab:futuresandweather}.
 
-\subsection{Results on Application A}
-
-Give us some numbers about how well your method works, especially in comparison to some baselines.
-You should provide a summary of the results in the text, as well as in tables (such as table~\ref{tab:example}) and figures (such as figure~\ref{fig:example}).
-
-You may use subfigures/wrapfigures (LaTeX packages) so that figures don't have to span the whole page or multiple figures are side by side.
-
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{lclc}
-    Method & Outcome (\%) \\
-    \hline \\[-11pt]
-    Us & 20.1 \\
-    Baseline & 18.2 \\ \hline
-  \end{tabular}
-  \label{tab:example}
-    \caption{Outcome by method used. These are our results.}
+\begin{table}[h!]
+	\begin{center}
+		\begin{tabular}{ccc}
+			Method & Train MSE & Test MSE \\
+			\hline \\[-11pt]
+			Feed-Forward & 0.000889 & 0.000260 \\
+			Simple RNN & 0.222644 & 0.118933 \\ 
+			GRU & 0.197310 & 0.096303 \\
+			LSTM & 0.204753 & 0.100222 \\
+			\hline
+		\end{tabular}
+	\quad
+		\begin{tabular}{ccc}
+			Train MSE & Test MSE \\
+			\hline \\[-11pt]
+			0.012446 & 0.005717 \\
+			0.167684 & 0.075022 \\ 
+			0.217229 & 0.109365 \\
+			0.204472 & 0.100299 \\
+			\hline
+		\end{tabular}
+		\label{tab:futuresandweather}
+		\caption{Training and testing MSE for futures only (left) and futures and weather (right) of neural network types over the same time period}
+	\end{center}
 \end{table}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[height=4in]{DataPipeline.png}
-  \caption{Example smile graphic.}
-  \label{fig:example}
-\end{figure}
+We found that not only were the results worse as a result of introducing the weather data but also the test/train inversion persisted during this time period as well.
 
+%This is a problem because the weather data doesn't go back that far so it is likely something else. We need a graph of this. 
 
-% \begin{figure}
-%         \begin{subfigure}[b]{0.25\textwidth}
-%                 \includegraphics[width=\linewidth]{ASOSAgg.png}
-%                 \caption{A gull}
-%                 \label{fig:gull}
-%         \end{subfigure}%
-%         \begin{subfigure}[b]{0.25\textwidth}
-%                 \includegraphics[width=\linewidth]{ASOSAgg.png}
-%                 \caption{A gull2}
-%                 \label{fig:gull2}
-%         \end{subfigure}
-%         \caption{Pictures of animals}\label{fig:animals}
-% \end{figure}
+\subsection{Futures, Weather, and Wheat-Related ETFs}
 
-\subsection{Results on Application B}
+These models are on data ETFs that began in 2011. The test/train period division is October 30, 2013. The baseline prediction MSE over this time period is 0.002. We include the wheat based ETFs as a means to test whether companies' stock in the wheat industry have predictive power in indicating the future price. The results over this time period are show in table \ref{tab:futuresweatherandetf}.
 
-Did more than one experiment type?
+\begin{table}[h!]
+		\begin{tabular}{ccc}
+			Method & Train MSE & Test MSE \\
+			\hline \\[-11pt]
+			FF& 0.002405 & 0.003373 \\
+			RNN & 0.168831 & 0.033897 \\ 
+			GRU & 0.205864 & 0.052294 \\
+			LSTM & 0.207230 & 0.052323 \\
+			\hline
+		\end{tabular}
+		\begin{tabular}{ccc}
+			Train MSE & Test MSE \\
+			\hline \\[-11pt]
+			0.014837 & 0.053937 \\
+			0.293548 & 0.101416 \\ 
+			0.187421 & 0.042839 \\
+			0.208780 & 0.053252 \\
+			\hline
+		\end{tabular}
+			\begin{tabular}{ccc}
+		Train MSE & Test MSE \\
+		\hline \\[-11pt]
+		0.016946 & 0.070487 \\
+		0.187846 & 0.043364 \\ 
+		0.186825 & 0.042947 \\
+		0.202720 & 0.050137 \\
+		\hline
+	\end{tabular}
+		\label{tab:futuresweatherandetf}
+		\caption{Training and testing MSE for futures only (left), futures and weather (middle) and futures, weather and ETF (right) over same time period trained on pre-October 30, 2013}
+\end{table}
 
-\section{Discussion and Related Work}
-
-This is where you characterize the outcomes of your method and draw conclusions from your experiment.
-The discussion will build upon the Introduction and the Results sections to synthesize where your contribution brings the field. Discuss any implications of your work.
-Discuss limitations of your work.
-Are there situations where you should and should not use your method.
-What implications are there on policy making, clinical decision making, or future research activities?
-Remember to contextualize your work with respect to related work and provide references.
+We anticipated that given the output of the weather-included forcast, the addition of more variables together with a shorter time frame would likely not improve predictive score. The introduction of the additional variables didn't seem to harm the predictive outcomes, but didn't improve the values at significant levels. 
 
 \section{Conclusion}
+
+In this paper we reviewed basic concepts within the futures market and developed an intuitive model under which we would be able to forecast the futures contract price. We find the results of this particular forecast to be discouraging to the idea that one can predict futures prices. 
+
+If we had to pursue a model that would best predict the price 30 days in advance, our results indicate a feed-forward network would be most adept at training and testing on such values. 
+
+In addition to a model suggestion, we have several other observations of note:
+
+\begin{enumerate}
+	\item Market Information - The markets are using orders of magnitude more information to arrive at the future price than could be contained in a single model. This fact seems allegorically comparable to the successes of ensemble methods with each actor in the market (though potentially a 'dumb learner') introducing information into the market and yielding a superior prediction. 
+	\item Magic Bullets - While very adept at prediction, neural networks take a great deal of precision and iteration in order to produce robust results. This observation strengthens the idea that there is no panacea to every type of prediction.
+	\item Further Parameter Tuning - While there are infinite parameter sets to each model, it is important to identify early in model development, key hyperparameters. These parameters are often not in your model.  As a part of further work, we would like to explore tuning window size and look ahead values. 
+\end{enumerate}
+
+
+
 Summarize your work one more time, this time assuming the reader has read your paper.
 Build suspense for what your next extension to this method would be.
 
