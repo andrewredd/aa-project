@@ -81,4 +81,4 @@ final_weather_spread = agg %>%
   spread(temp, value)
 
 # write out a saved version of the weather data to avoid running the imputation every time you need this file
-write_csv(final_weather_spread, "final_weather_spread.csv")
+write_csv(final_weather_spread, "final_weather_imputed.csv")
