@@ -89,8 +89,7 @@ Since their development in the late 1980s, neural networks have become a mainsta
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=3in]{RNN-unrolled.png}
-	\caption{Example of unrolled RNN}
-	\label{fig:unrolledRNN}
+	\caption{Example of unrolled RNN}\label{fig:unrolledRNN}
 \end{figure}
 
 Long Short-term memory (LSTM) and Gated Recurrent Units have been researched to further develop the idea of persistence of sequential effect. (\cite{Hochreiter1997}, \cite{Chung}) These methods provide even greater "memory" to the model, enabling networks to better work off of historic data. 
@@ -183,7 +182,7 @@ The data output was relatively clean coming out of the CME API. We made minor ch
 
 A major decision was made at this step of the data pipeline to only include weather data during days that we had changing futures data (business days when the futures market was open). This decision reduced our weather data sequentiality in exchange for avoiding imputation of weekend values of futures data. Future iterations of this work would cross validate outcomes by using carry forward of pull back imputation to either use Friday or Monday values as proxy for weekend futures data. 
 
-A full picture of our data pipeline is shown in figure \ref{fig:datapipeline}. We continue our discussion of the later end of the data pipeline with the results in section \ref{results}.
+A full picture of our data pipeline is shown in Figure \ref{fig:datapipeline}. We continue our discussion of the later end of the data pipeline with the results in section \ref{results}.
 
 \begin{figure}[htbp]
 	\centering
@@ -197,7 +196,7 @@ A full picture of our data pipeline is shown in figure \ref{fig:datapipeline}. W
 
 Many traders will use technical analysis in order to capture an ongoing trend in the financial product. We used Open-High-Low-Close (OHLC) average, daily percent change, and 50, 100, and 200 day moving averages in order to communicate such trends.  
 
-In this phase we also transformed our data into a sequence appropriate for an RNN. This sequence involved taking a sliding window along our dataset. The sliding window size we implemented was 44 working days (~ 2 mo.). We then crafted our target as a look-ahead variable 22 working days into the future. The output to this process is a matrix shaped (\# of windows (nrows - window size - look-ahead value), window size, ncols). The sequential nature of the input means that our inputs are no longer i.i.d., but as we are concerned with sequence of events this seems to be appropriate. In our baseline model (feed forward neural net) we do not perform this transformation and assume i.i.d. observations. 
+In this phase we also transformed our data into a sequence appropriate for an RNN. This sequence involved taking a sliding window along our dataset. The sliding window size we implemented was 44 working days (approx. 2 mo.). We then crafted our target as a look-ahead variable 22 working days into the future. The output to this process is a matrix shaped \{\}\# of windows (nrows - window size - look-ahead value), window size, ncols\}. The sequential nature of the input means that our inputs are no longer i.i.d., but as we are concerned with sequence of events this seems to be appropriate. In our baseline model (feed forward neural net) we do not perform this transformation and assume i.i.d. observations. 
 
 \subsection{Comparison Methods}
 
@@ -230,7 +229,7 @@ The subset of models that involved only futures data were high performers in our
 	\end{center}
 \end{table}
 
-The feed-forward network had very high precision and beat the baseline over the same period. However, the RNN implementations failed to beat the baseline and under LSTM and GRU implementations the test MSE was lower than the train MSE. We attributed this very non-intuitive result to the high variance of the futures price in our training set and the relatively low volatility in our test set. This is visualized in figure \ref{fig:futuresonlygraph}. 
+The feed-forward network had very high precision and beat the baseline over the same period. However, the RNN implementations failed to beat the baseline under LSTM and GRU implementations. We attributed this non-intuitive result to the high variance of the futures price in our training set and the relatively low variance in our test set. This is visualized in figure \ref{fig:futuresonlygraph}. 
 
 \begin{figure}[htbp]
 	\centering
@@ -238,7 +237,7 @@ The feed-forward network had very high precision and beat the baseline over the 
 	\caption{Model confusion over major spikes in futures price. These spikes occured more in the training period (pre-October 1990)} \label{fig:futuresonlygraph}
 \end{figure}
 
-We note that the model is not able to adequately account for the extreme spikes in the futures price. As a result the model would perform better during times of relatively low variance throughout the market. While finding is not surprising, it underscores the difficulty of predicting the face of unanticipated increases and decreases in the market.   
+We note that the model is not able to adequately account for the extreme spikes in the futures price. As a result the model would perform better during times of relatively low variance throughout the market. While this finding is not surprising, it underscores the difficulty of predicting in the face of unanticipated volatility in the market.   
 
 \subsection{Futures and Weather}
 
@@ -255,7 +254,7 @@ These models incorporated both futures and weather data beginning in 2005. We al
 			LSTM & 0.204753 & 0.100222 \\
 			\hline
 		\end{tabular}
-	\quad
+	\vline
 		\begin{tabular}{ccc}
 			Train MSE & Test MSE \\
 			\hline \\[-11pt]
@@ -270,13 +269,11 @@ These models incorporated both futures and weather data beginning in 2005. We al
 	\end{center}
 \end{table}
 
-We found that not only were the results worse as a result of introducing the weather data but also the test/train inversion persisted during this time period as well.
-
-%This is a problem because the weather data doesn't go back that far so it is likely something else. We need a graph of this. 
+Unfortunately, we found that not only were the results worse as a result of introducing the weather data but also the test/train inversion persisted during this time period as well.
 
 \subsection{Futures, Weather, and Wheat-Related ETFs}
 
-These models are on data ETFs that began in 2011. The test/train period division is October 30, 2013. The baseline prediction MSE over this time period is 0.002. We include the wheat based ETFs as a means to test whether companies' stock in the wheat industry have predictive power in indicating the future price. The results over this time period are show in table \ref{tab:futuresweatherandetf}.
+These models are on wheat-related stocks that began in 2011. The baseline prediction MSE over this time period is 0.002. We include the wheat based ETFs as a means to test whether companies' stock in the wheat industry have predictive power in indicating the future price. The results over this time period are shown in table \ref{tab:futuresweatherandetf}.
 
 \begin{table}[h!]
 		\begin{tabular}{ccc}
@@ -288,6 +285,7 @@ These models are on data ETFs that began in 2011. The test/train period division
 			LSTM & 0.207230 & 0.052323 \\
 			\hline
 		\end{tabular}
+	\vline
 		\begin{tabular}{ccc}
 			Train MSE & Test MSE \\
 			\hline \\[-11pt]
@@ -297,6 +295,7 @@ These models are on data ETFs that began in 2011. The test/train period division
 			0.208780 & 0.053252 \\
 			\hline
 		\end{tabular}
+		\vline
 			\begin{tabular}{ccc}
 		Train MSE & Test MSE \\
 		\hline \\[-11pt]
@@ -310,29 +309,23 @@ These models are on data ETFs that began in 2011. The test/train period division
 		\caption{Training and testing MSE for futures only (left), futures and weather (middle) and futures, weather and ETF (right) over same time period trained on pre-October 30, 2013}\label{tab:futuresweatherandetf}
 \end{table}
 
-We anticipated that given the output of the weather-included forcast, the addition of more variables together with a shorter time frame would likely not improve predictive score. The introduction of the additional variables didn't seem to harm the predictive outcomes, but didn't improve the values at significant levels. 
+We anticipated that given the output of the weather-included forecast, the addition of more variables together with a shorter time frame would likely not improve predictive score. The introduction of the additional variables did not seem to harm the predictive outcomes, but also did not improve the values at significant levels. 
 
 \section{Conclusion}
 
-In this paper, we reviewed basic concepts within the futures market and developed an intuitive model under which we would be able to forecast the futures contract price. We find the results of this particular forecast to be discouraging to the idea that one can predict futures prices. 
+In this paper, we reviewed basic concepts within the futures market and developed an intuitive model under which we would be able to forecast the futures contract price. We find the results of this particular forecast fortifies the idea that one can not predict futures prices using an RNN. 
 
-If we had to pursue a model that would best predict the price 22 working days in advance, our results indicate a feed-forward network would be most adept at training and testing on such values. 
+If we had to pursue a model that would best predict the price 22 working days in advance, our results indicate a feed-forward network would be most adept at predicting prices. 
 
 In addition to a model suggestion, we have several other observations of note:
 
 \begin{enumerate}
-	\item Market Information - The markets are using orders of magnitude more information to arrive at the future price than could be contained in a single model. This fact seems allegorically comparable to the successes of ensemble methods with each actor in the market (though potentially a 'dumb learner') introducing information into the market and yielding a superior prediction. 
+	\item Market Information - The market price is the amalgamation of all market participants' valuations based on information. These participants include producers, consumers, and speculators, who are all deeply entrenched in the mechanics of the market. The breadthknowledge this body represents is very difficult to match at daily granularity.
 	\item Magic Bullets - While very adept at prediction, neural networks take a great deal of precision and iteration in order to produce robust results. This observation strengthens the idea that there is no panacea to every type of prediction.
 	\item Further Parameter Tuning - While there are infinite parameter sets to each model, it is important to identify early in model development, key hyperparameters. These parameters are often not in your model.  As a part of further work, we would like to explore tuning window size and look ahead values. 
 \end{enumerate}
 
-
-
-Summarize your work one more time, this time assuming the reader has read your paper.
-Build suspense for what your next extension to this method would be.
-
-% ACKNOWLEDGEMENTS
-% \acks{Many thanks to all collaborators and funders!}
+\acks{Many thanks to Jeremy Weiss!}
 
 \bibliography{project_bib}
 
@@ -344,8 +337,8 @@ Build suspense for what your next extension to this method would be.
 	\item day - Calendar date of the summary.
 	\item max\_temp\_f - Maximum Air Temperature [F].
 	\item min\_temp\_f - Minimum Air Temperature [F].
-	\item max\_dewpoint\_f - Maximum Dew Point [F].
-	\item min\_dewpoint\_f - Minimum Dew Point [F].
+	\item max\_dew point\_f - Maximum Dew Point [F].
+	\item min\_dew point\_f - Minimum Dew Point [F].
 	\item precip\_in - Daily Precipitation [inch].
 	\item avg\_wind\_speed\_kts - Average Wind Speed [knots]
 	\item avg\_wind\_drct - Average Wind Direction [deg]
