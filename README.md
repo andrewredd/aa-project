@@ -1,5 +1,4 @@
-# aa-project
-Final project for Applied Analytics: The Machine Learning Pipeline
+# Final project for Applied Analytics: The Machine Learning Pipeline
 
 Works on MacOS/Linux Python 3.6/R 
 
