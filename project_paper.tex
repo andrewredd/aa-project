@@ -208,13 +208,13 @@ As our comparison methods, we implement a feed-forward (FF) neural network (NN),
 
 \subsection{Evaluation Criteria}
 
-Since the variable, that we are considering is real valued constrained between zero and one (normalized future price) we use NNs in this context as a regression model. A common error metric is mean squared error (the variance of model residuals). Our definition of a successful model is therefore a model that produces a small variance of error over time. Such a model would likely outperform the model over the long-term. 
+Since the variable that we are considering is real valued constrained between zero and one (normalized future price) we use NNs in this context as a regression model. A common error metric is mean squared error (the variance of model residuals). Our definition of a successful model is therefore a model that produces a small variance of error over time. Such a model would likely outperform the model over the long-term. 
 
 \section{Results} \label{results}
 
 \subsection{Futures Only}
 
-The subset of models that involved only futures data were high performers in our experiments. The baseline carry forward for this subset of data was 0.0014. The results of each model is shown in figure \ref{tab:futuresonly}.
+The subset of models that involved only futures data were high performers in our experiments. The baseline carry forward for this subset of data was 0.0014. The result of each model is shown in figure \ref{tab:futuresonly}.
 
 \begin{table}[h!]
 	\begin{center}
