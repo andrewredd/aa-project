@@ -4,3 +4,10 @@
 .Ruserdata
 *.csv
 *.jpeg
+*.log
+*.pdf
+*.dtx
+*.txt
+*.synctex.gz
+.ipynb_checkpoints/*
+.DS_Store
