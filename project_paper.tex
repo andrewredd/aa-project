@@ -127,7 +127,7 @@ We built off the idea of stacking specialized (RNN/GRU/LSTM) layers based on wor
 	The Automated Surface Observing System (ASOS) was commissioned in the early 1990s with the intent of modernizing weather reporting in the US. For this project we used an API provided by Iowa State University that outputs daily aggregates of the minute data provided by ASOS. The output variables are listed in Appendix A: Weather Variable List.
 	
 	\subsubsection{Time Period Selection}
-	The API retrieves weather data for a given time period at a given airport. We used a secondary API call to identify all eligible airports in the Kansas, Oklahoma, and Nebraska regions. Even though ASOS was commissioned in the 90s much of the infrastructure was not in place until the early 2000s. We wanted to explore the trade off between more collection sites and a greater weather history. We determined the optimal time period by evaluating the number of operational stations in the ASOS system by year. We did this by pulling the data for every site across all three states for the years from 1998 - 2018 and received the output in Figure \ref{fig:asosstations}. 
+	The API retrieves weather data for a given time period at a given airport. We used a secondary API call to identify all eligible airports in the Kansas, Oklahoma, and Nebraska regions. Even though ASOS was commissioned in the 1990s much of the infrastructure was not in place until the early 2000s. We wanted to explore the trade off between more collection sites and a greater weather history. We determined the optimal time period by evaluating the number of operational stations in the ASOS system by year. We did this by pulling the data for every site across all three states for the years from 1998 - 2018 and received the output in Figure \ref{fig:asosstations}. 
 	
 	We defined an online station as having the number of rows that corresponded to one of the top three row numbers for the year. This method assumes that the majority of stations are operational with a full dataset and will thus define a "online" data size in number of rows by multiple votes. The year period that we chose was 2005 to 2018.
 	
@@ -140,7 +140,7 @@ We built off the idea of stacking specialized (RNN/GRU/LSTM) layers based on wor
 		\label{fig:asosstations}
 	\end{figure}
 
-	One concern related to choosing the appropriate time period relative to the number of online stations was that of losing our representative weather spread across the geographic region. We verified that our 2005 decision didn't remove more rural stations from the data set by visualizing a map of values across the geographic region shown below in Figure 
+	One concern related to choosing the appropriate time period relative to the number of online stations was that of losing our representative weather spread across the geographic region. We verified that our 2005 decision did not remove more rural stations from the data set by visualizing a map of values across the geographic region shown below in Figure 
 	
 	\begin{figure}[htbp]
 		\centering
@@ -174,13 +174,13 @@ We built off the idea of stacking specialized (RNN/GRU/LSTM) layers based on wor
 
 \subsection{Futures Data}
  
-We retrieved the futures prices directly from the Chicago Mercantile Exchange. The raw data form of the output was high, low, close, volumn and adjusted close. We decided to use the three month rollover strategy as a it would have less volatility in price due to contract changes (i.e. three months prior to contract termination, the current contract is sold and the next contract period is purchased)
+We retrieved the futures prices from Quandl API which provides free continuous futures contracts data. Individual futures contracts trade for a finite period of time and continuous futures data 'stitches' together rolling futures contracts to simulate a continous time series of prices.  For example, 3rd-month continuous contract prices use the prices of the 3rd earliest futures contract available which would be the September 2018 contract (as it is April 2018 at the time of this writing).  The raw data form of the output was high, low, close, volume, and adjusted close. We decided to use the 3rd-month continous contract as a it would have less volatility in price due to contract changes (i.e. three months prior to contract termination, the current contract is sold and the next contract period is purchased)
 
 The data output was relatively clean coming out of the CME API. We made minor changes to date and price format to work with our models.
 
 \subsection{Combining and Splitting}
 
-A major decision was made at this step of the data pipeline to only include weather data during days that we had changing futures data. (working days) This decision reduced our weather data sequentiality in exchange for avoiding imputation of weekend values of futures data. Future iterations of this work would would cross validate outcomes by using carry forward of pull back imputation to either use Friday or Monday values as proxy for weekend futures data. 
+A major decision was made at this step of the data pipeline to only include weather data during days that we had changing futures data (business days when the futures market was open). This decision reduced our weather data sequentiality in exchange for avoiding imputation of weekend values of futures data. Future iterations of this work would cross validate outcomes by using carry forward of pull back imputation to either use Friday or Monday values as proxy for weekend futures data. 
 
 Three-way split
 
@@ -196,15 +196,15 @@ A full picture of our data pipeline is shown in figure \ref{fig:datapipeline}. W
 
 \subsection{Feature Choices}
 
-Many traders will use technical analysis in order to capture an ongoing trend in the financial product. We used Open-High-Low-Close (OHLC) average, daily percent change, and 50, 100, and 200 moving averages in order to communicate such trends.  
+Many traders will use technical analysis in order to capture an ongoing trend in the financial product. We used Open-High-Low-Close (OHLC) average, daily percent change, and 50, 100, and 200 day moving averages in order to communicate such trends.  
 
-In this phase we also transformed our data into a sequence appropriate for an RNN. This sequence involved taking a sliding window along our dataset. The sliding window size we implemented was 44 working days (~ 2 mo.). We then crafted our target as a look-ahead variables 22 working days into the future. The output to this process is a matrix shaped (\# of windows (nrows - window size - look-ahead value), window size, ncols). The sequential nature of the input means that our inputs are no longer i.i.d., but as we are concerned with sequence of events this seems to be appropriate. In our baseline model (feed forward neural net) we do not perform this transformation and assume i.i.d. observations. 
+In this phase we also transformed our data into a sequence appropriate for an RNN. This sequence involved taking a sliding window along our dataset. The sliding window size we implemented was 44 working days (~ 2 mo.). We then crafted our target as a look-ahead variable 22 working days into the future. The output to this process is a matrix shaped (\# of windows (nrows - window size - look-ahead value), window size, ncols). The sequential nature of the input means that our inputs are no longer i.i.d., but as we are concerned with sequence of events this seems to be appropriate. In our baseline model (feed forward neural net) we do not perform this transformation and assume i.i.d. observations. 
 
 \subsection{Comparison Methods}
 
 In order to validate an improved prediction we take today's closing price and use that as the best prediction for the future closing price. This comparison is on a rolling basis and thus will not equate to the actual future contract final price, but serves a proxy to see how the market already performs  in predicting the price one month out. 
 
-As our comparison methods, we implement a feed-forward (FF) neural network (NN), a fully-connected RNN where the output is to be fed back to input, a gated recurrent unit (GRU) and a long-short term memory (LSTM). The later three NNs being implementations of a recurrent neural network. For each addition of data (futures only, futures and weather, and futures, weather and wheat ETFs) we run the four methods above and compare to the MSE values of our baseline. We anticipated the RNN implementations to outperform FF and baseline. We further anticipated that the addition of more data sources would improve model performance. 
+As our comparison methods, we implement a feed-forward (FF) neural network (NN), a fully-connected RNN where the output is to be fed back to input, a gated recurrent unit (GRU) and a long-short term memory (LSTM). The later three NNs being implementations of a recurrent neural network. For each addition of data (futures only, futures and weather, and futures and weather and wheat ETFs) we run the four methods above and compare to the MSE values of our baseline. We anticipated the RNN implementations to outperform FF and baseline. We further anticipated that the addition of more data sources would improve model performance. 
 
 \subsection{Evaluation Criteria}
 
