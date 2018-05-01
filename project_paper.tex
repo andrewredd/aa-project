@@ -60,7 +60,7 @@ In Section \ref{background}, we define key topics in futures trading. In Section
 \section{Background} \label{background}
 
 \subsection{Futures Trading}
-	A futures contract is defined as "an agreement to buy or sell an underlying financial instrument or commodity at a specified future date and price." Why would this instrument be important in the economy? This contract enables producers to hedge risk and speculators to take on risk in relation to a given commodity. (\cite{InvestopediaF})
+	A futures contract is defined as "an agreement to buy or sell an underlying financial instrument or commodity at a specified future date and price." This contract enables producers to hedge risk and speculators to take on risk in relation to a given commodity. (\cite{InvestopediaF})
 	
   Producers that would be interested in hedging risk through futures are players at any stage of product that depends on a commodity as an input. Imagine a wheat farmer, who in anticipation of a bumper year across the Midwest, desires to lock in today's high futures price rather than waiting three months to harvest and sell at the possibly low market price. Further imagine a bread manufacturer, who fears international wheat demand may cause a spike in price in the US wheat market, wishes to lock-in the current low futures price to better manage company's operations and pricing. In both cases, the producers feared a price change and used a futures contract to hedge away risk.
   
@@ -80,6 +80,10 @@ In Section \ref{background}, we define key topics in futures trading. In Section
 	
 	Wheat quality has many measures such as protein content, grain structure, and grain weight. These quality measures are affected by a variety of variables such as soil quality, grain type, agronomy interventions, and growing climate conditions. Many studies have tried to model these effects in an effort to predict wheat yield within a time horizon to improve yield through intervention. \cite{Gooding2017} found that 70\% of crop variation could be accounted for by wheat type, fertilizer application, and precipitation during the winter and spring. Their model could account 90\% of the annual variation after including summer temperature. Further studies have shown that daily fluctuation measurements are critical to properly predicting wheat outcomes (\cite{Nuttall2017} \cite{Mearns1996})
 	
+\subsection{Wheat Price Modeling Assumptions}
+We assume that all non observed factors (fertilizer, soil quality, etc) are on average consistent throughout the wheat growing region. This assumption isolates weather as the primary indicator of crop yield and therefore wheat supply. We also assume that future demand is appropriately modeled by the futures price today. The final assumption is that predicted wheat supply is not accounting for all weather-related effects on the wheat crop and therefore wheat supply. These three assumptions isolate the current futures price and the weather as two main drivers of the true future price. 
+	
+
 \section{Method: Neural Networks} \label{model}
 
 Since their development in the late 1980s, neural networks have become a mainstay in machine learning. (\cite{Schmidhuber2015}) Recurrent neural networks were designed to handle sequential information through a looping network structure that would pass data inputs to adjacent nodes. 
@@ -88,32 +92,34 @@ Insert RNN diagram here
 
 Long-Short term memory (LSTM) and Gated Recurrent Units have been developed to further develop the idea of persistence of sequential effect. (\cite{Hochreiter1997}, \cite{Chung}) These methods provide even greater "memory" to the model, enabling networks to better work off of historic data. 
 
-Insert side-by-side images of LSTM and GRU
-
-[Insert more discussion on LSTMs and GRU]
-
 These methods have been used in a myriad of sectors to provide a better prediction where other statistical methods have failed. (\cite{Ugurlu2018}) They have also proven useful in the prediction of stock patterns. (\cite{YoungohcYoon}) 
 
 We use the keras to implement a series of models that use Simple RNN, LSTM, and GRU layers. \cite{chollet2015keras}. The implementation code can be found at \url{https://github.com/aredd-cmu/aa-project}
 
-
-Guidance:
-If you are combining existing methods, then you don't need to provide a ton of detail: feel free to just cite other packages and papers and tell us how you put them together.
-
 \section{Methods} \label{Methods}
 
-\subsection{Wheat Price Modeling Assumptions}
-We assume that all non observed factors (fertilizer, soil quality, etc) are on average consistent throughout the wheat growing region. This assumption isolates weather as the primary indicator of crop yield and therefore wheat supply. We also assume that future demand is appropriately modeled by the futures price today. The final assumption is that predicted wheat supply is not accounting for all weather-related effects on the wheat crop and therefore wheat supply. These three assumptions isolate the current futures price and the weather as two main drivers of the true future price. 
+The structure under which we employ these methods is designed to search for the optimal network within our constrained resources. We perform cross validation over the number of specialized layers (simple RNN, GRU, LSTM) and different configurations of neurons (see futures\_data.ipynb in code repository). We found that four specialized layers produced the best results over our set with dense layer outputs [256, 256, 128, 32, 16, 1]. We used MSE as the selection criteria.
 
-%\emph{Note: if the paper is more about the application than the method, this Section may be entitled Methods and appear before Section \ref{model}}
-%
-%By reading the Experimental Setup, your reader should have the information necessary to replicate the study.
-%
-%Describe the cohort/data. Provide information about the population, the inclusion and exclusion criteria, what data were extracted, how features were processed, etc. In fact, you may want the following headings. \textbf{A flow chart can be very helpful} to illustrate the experimental setup, study design, inclusion/exclusion process, etc.
-%
-%For more clinical application papers, each of the sections above might be several paragraphs or pages because we really want to understand the setting
-%\subsection{Cohort Selection} COMMENTED BECAUSE I DONT THINK WE NEED THIS
-%Describe how the samples you used were selected to form your cohort and also to provide cohort descriptive statistics. In methodologic papers, the ``Table 1'' describing the population by covariate summary statistics goes here. In application papers, ``Table 1'' leads the Results Section. Relevant information about the study design, such how cases and controls were identified, goes here. See Section \ref{results} for an example of how to build a table in LaTeX.
+After selecting the general model hyperparameters we generated a series of models to try to identify the type of specialized layer that may be able to best predict futures outcomes. We used the structure shown in table \ref{tab:networkstructure} across all methods to isolate the specialized layers in the design.
+
+\begin{table}[htbp]
+	\centering
+	\begin{tabular}{lclc}
+		Layer Type & Output Shape \\
+		\hline \\[-11pt]
+		Dense & 256 \\
+		Spec Layer*(\# of spec. layers-1) & 256\\
+		Spec Layer & 128\\
+		Dense & 32\\
+		Dense & 16\\
+		Dense & 1\\
+		\hline
+	\end{tabular}
+	\label{tab:networkstructure}
+	\caption{Abstract network structure example}
+\end{table}
+
+We used this structure based on work used others to predict financial outcomes and compare methods. (\ref{benjikcf})
 
 \subsection{Data Extraction}
 
@@ -149,7 +155,7 @@ We assume that all non observed factors (fertilizer, soil quality, etc) are on a
 	\begin{table}[htbp]
 		\centering
 		\begin{tabular}{lclc}
-			Variable & Upper Bound & Lower Bound(\%) \\
+			Variable & Upper Bound & Lower Bound \\
 			\hline \\[-11pt]
 			max\_temp\_f & 130 & min(-50, min(min\_temp\_f))\\
 			min\_temp\_f & 130 & -50 \\
