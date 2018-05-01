@@ -25,7 +25,7 @@
 
 \begin{document}
 
-\title{Heinz 95-845: Predicting Futures Data\\ using Weather Data:\\ A Neural Network Approach}
+\title{Heinz 95-845: Predicting Futures Data:\\ A Neural Network Approach}
 
 \author{\name Andrew Redd \email aredd/aredd@andrew.cmu.edu \\
        \addr Heinz College\\
@@ -66,8 +66,6 @@ In Section \ref{background}, we define key topics in futures trading. In Section
   
   Speculators in the market are organizations that vary in opinion of how current events will influence the current projected price of a given commodity. An investor that purchases a futures contract anticipates that the fluctuate either up or down from the current price.
 
-  Insert Long and Short position images side by side
-
   An investor in futures (speculator or producer) is defined to have entered a "long" position if he/she agrees to purchase a good at a specified time and price in the future. An investor is termed to have entered a "short" position if he/she agrees to deliver a good at a specified time and price in the future. If an investor enters a long futures position and the market price goes up \textdollar1 during any daily time period, the investor has the option to purchase a more expensive good at a lower price in the future and thus profits \textdollar 1 per unit covered by the contract. Conversely, if the price of the good drops, the investor loses \textdollar 1 per unit covered by the contract. The opposite case holds true for the short position and market changes held constant.
   
   Futures contracts have two types of settlements. The first type is a cash settlement. This setting involves paying the cash difference between the futures contract price and the spot/market price at the time of contract expiration. The second type is physical delivery which requires the provider of the contract to deliver the actual goods. This applies to commodities such as oil, energy, and farm animals. The majority of futures contracts are settled via a cash settlement.
@@ -86,11 +84,16 @@ We assume that all non observed factors (fertilizer, soil quality, etc) are on a
 
 \section{Method: Neural Networks} \label{model}
 
-Since their development in the late 1980s, neural networks have become a mainstay in machine learning. (\cite{Schmidhuber2015}) Recurrent neural networks were designed to handle sequential information through a looping network structure that would pass data inputs to adjacent nodes. 
+Since their development in the late 1980s, neural networks have become a mainstay in machine learning. (\cite{Schmidhuber2015}) Recurrent neural networks were designed to handle sequential information through a looping network structure that would pass data inputs to adjacent nodes. (see Figure \ref{fig:unrolledRNN})
 
-Insert RNN diagram here
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=3in]{RNN-unrolled.png}
+	\caption{Example of unrolled RNN}
+	\label{fig:unrolledRNN}
+\end{figure}
 
-Long-Short term memory (LSTM) and Gated Recurrent Units have been developed to further develop the idea of persistence of sequential effect. (\cite{Hochreiter1997}, \cite{Chung}) These methods provide even greater "memory" to the model, enabling networks to better work off of historic data. 
+Long Short-term memory (LSTM) and Gated Recurrent Units have been researched to further develop the idea of persistence of sequential effect. (\cite{Hochreiter1997}, \cite{Chung}) These methods provide even greater "memory" to the model, enabling networks to better work off of historic data. 
 
 These methods have been used in a myriad of sectors to provide a better prediction where other statistical methods have failed. (\cite{Ugurlu2018}) They have also proven useful in the prediction of stock patterns. (\cite{YoungohcYoon}) 
 
@@ -100,7 +103,7 @@ We use the keras to implement a series of models that use Simple RNN, LSTM, and 
 
 The structure under which we employ these methods is designed to search for the optimal network within our constrained resources. We perform cross validation over the number of specialized layers (simple RNN, GRU, LSTM) and different configurations of neurons (see futures\_data.ipynb in code repository). We found that four specialized layers produced the best results over our set with dense layer outputs [256, 256, 128, 32, 16, 1]. We used MSE as the selection criteria.
 
-After selecting the general model hyperparameters we generated a series of models to try to identify the type of specialized layer that may be able to best predict futures outcomes. We used the structure shown in table \ref{tab:networkstructure} across all methods to isolate the specialized layers in the design.
+After selecting the general model hyperparameters we generated a series of models to try to identify the type of specialized layer that may be able to best predict futures outcomes. We used the structure shown in Table \ref{tab:networkstructure} across all methods to isolate the specialized layers in the design.
 
 \begin{table}[htbp]
 	\centering
@@ -115,11 +118,10 @@ After selecting the general model hyperparameters we generated a series of model
 		Dense & 1\\
 		\hline
 	\end{tabular}
-	\label{tab:networkstructure}
-	\caption{Abstract network structure example}
+	\caption{Abstract network structure example}\label{tab:networkstructure}
 \end{table}
 
-We used this structure based on work used others to predict financial outcomes and compare methods. (\ref{benjikcf})
+We used this structure based on work used others to predict financial outcomes and compare methods. (\cite{benjikcf})
 
 \subsection{Data Extraction}
 
@@ -140,7 +142,7 @@ We used this structure based on work used others to predict financial outcomes a
 		\label{fig:asosstations}
 	\end{figure}
 
-	One concern related to choosing the appropriate time period relative to the number of online stations was that of losing our representative weather spread across the geographic region. We verified that our 2005 decision didn't remove more rural stations from the data set by visualizing a map of values across the geographic region shown below in Figure 
+	One concern related to choosing the appropriate time period relative to the number of online stations was that of losing our representative weather spread across the geographic region. We verified that our 2005 decision didn't remove more rural stations from the data set by visualizing a map of values across the geographic region shown below in Figure \ref{fig:asosspread}.
 	
 	\begin{figure}[htbp]
 		\centering
@@ -149,12 +151,12 @@ We used this structure based on work used others to predict financial outcomes a
 		\label{fig:asosspread}
 	\end{figure}
 	
-	\subsubsection{Cleaning Data}
+	\subsection{Cleaning Data}
 	First, The aggregated data had severe outliers along multiple columns due likely to sensor malfunction. (i.e. Max temperature of 921,613$^oF$) We handled these outliers using the following heuristics found via weather extremes recorded online shown in Table \ref{tab:bounds}. Since the values were large, conventional outlier methods weren't getting the variable ranges down to expected even after method application.  
 
 	\begin{table}[htbp]
 		\centering
-		\begin{tabular}{lclc}
+		\begin{tabular}{ccc}
 			Variable & Upper Bound & Lower Bound \\
 			\hline \\[-11pt]
 			max\_temp\_f & 130 & min(-50, min(min\_temp\_f))\\
@@ -164,8 +166,7 @@ We used this structure based on work used others to predict financial outcomes a
 			precip\_in & 70 & 0\\
 			\hline
 		\end{tabular}
-		\label{tab:bounds}
-		\caption{List of upper and lower bounds used to clean data outlier observations due to sensor malfunction}
+		\caption{List of upper and lower bounds used to clean data outlier observations due to sensor malfunction}\label{tab:bounds}
 	\end{table}
 
 	Second, several of the values across the dataset were missing. Assuming that the data was lost because of a weather or geographically related sensor malfunction, we assert that the data is missing at random and impute based on our data values. The data was imputed assuming the variables followed a multivariate normal distribution using the Amelia II implementation in R. (\cite{ameila})
@@ -182,13 +183,11 @@ The data output was relatively clean coming out of the CME API. We made minor ch
 
 A major decision was made at this step of the data pipeline to only include weather data during days that we had changing futures data. (working days) This decision reduced our weather data sequentiality in exchange for avoiding imputation of weekend values of futures data. Future iterations of this work would would cross validate outcomes by using carry forward of pull back imputation to either use Friday or Monday values as proxy for weekend futures data. 
 
-Three-way split
-
 A full picture of our data pipeline is shown in figure \ref{fig:datapipeline}. We continue our discussion of the later end of the data pipeline with the results in section \ref{results}.
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=5in]{DataPipeline.png}
+	\includegraphics[width=6in]{DataPipeline.png}
 	\caption{Data pipeline overview}
 	\label{fig:datapipeline}
 \end{figure}
@@ -198,7 +197,7 @@ A full picture of our data pipeline is shown in figure \ref{fig:datapipeline}. W
 
 Many traders will use technical analysis in order to capture an ongoing trend in the financial product. We used Open-High-Low-Close (OHLC) average, daily percent change, and 50, 100, and 200 moving averages in order to communicate such trends.  
 
-In this phase we also transformed our data into a sequence appropriate for an RNN. This sequence involved taking a sliding window along our dataset. The sliding window size we implemented was 44 working days (~ 2 mo.). We then crafted our target as a look-ahead variables 22 working days into the future. The output to this process is a matrix shaped (\# of windows (nrows - window size - look-ahead value), window size, ncols). The sequential nature of the input means that our inputs are no longer i.i.d., but as we are concerned with sequence of events this seems to be appropriate. In our baseline model (feed forward neural net) we do not perform this transformation and assume i.i.d. observations. 
+In this phase we also transformed our data into a sequence appropriate for an RNN. This sequence involved taking a sliding window along our dataset. The sliding window size we implemented was 44 working days (approx 2 mo.). We then crafted our target as a look-ahead variables 22 working days into the future. The output to this process is a matrix shaped \{\# of windows (nrows - window size - look-ahead value), window size, ncols\}. The sequential nature of the input means that our inputs are no longer i.i.d., but as we are concerned with sequence of events this seems to be appropriate. In our baseline model (feed forward neural net) we do not perform this transformation and assume i.i.d. observations. 
 
 \subsection{Comparison Methods}
 
@@ -214,7 +213,7 @@ Since the variable, that we are considering is real valued constrained between z
 
 \subsection{Futures Only}
 
-The subset of models that involved only futures data were high performers in our experiments. The baseline carry forward for this subset of data was 0.0014. The results of each model is shown in figure \ref{tab:futuresonly}.
+The subset of models that involved only futures data were high performers in our experiments. The baseline carry forward for this subset of data was 0.0014. The results of each model is shown in Table \ref{tab:futuresonly}.
 
 \begin{table}[h!]
 	\begin{center}
@@ -227,20 +226,16 @@ The subset of models that involved only futures data were high performers in our
 		LSTM & 0.017986 & 0.160441 \\
 		\hline
 		\end{tabular}
-	  \label{tab:futuresonly}
-		\caption{Training and testing MSE of neural network types over futures only data}
+		\caption{Training and testing MSE of neural network types over futures only data}\label{tab:futuresonly}
 	\end{center}
 \end{table}
 
 The feed-forward network had very high precision and beat the baseline over the same period. However, the RNN implementations failed to beat the baseline and under LSTM and GRU implementations the test MSE was lower than the train MSE. We attributed this very non-intuitive result to the high variance of the futures price in our training set and the relatively low volatility in our test set. This is visualized in figure \ref{fig:futuresonlygraph}. 
 
-%The test set begins in October, 3rd 1990.
-
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=5in]{futuresonlygraph.png}
-	\caption{Model confusion over major spikes in futures price. These spikes occured more in the training period (pre-October 1990) }
-	\label{fig:futuresonlygraph}
+	\caption{Model confusion over major spikes in futures price. These spikes occured more in the training period (pre-October 1990)} \label{fig:futuresonlygraph}
 \end{figure}
 
 We note that the model is not able to adequately account for the extreme spikes in the futures price. As a result the model would perform better during times of relatively low variance throughout the market. While finding is not surprising, it underscores the difficulty of predicting the face of unanticipated increases and decreases in the market.   
@@ -270,8 +265,8 @@ These models incorporated both futures and weather data beginning in 2005. We al
 			0.204472 & 0.100299 \\
 			\hline
 		\end{tabular}
-		\label{tab:futuresandweather}
-		\caption{Training and testing MSE for futures only (left) and futures and weather (right) of neural network types over the same time period}
+		
+		\caption{Training and testing MSE for futures only (left) and futures and weather (right) of neural network types over the same time period}\label{tab:futuresandweather}
 	\end{center}
 \end{table}
 
@@ -311,17 +306,17 @@ These models are on data ETFs that began in 2011. The test/train period division
 		0.202720 & 0.050137 \\
 		\hline
 	\end{tabular}
-		\label{tab:futuresweatherandetf}
-		\caption{Training and testing MSE for futures only (left), futures and weather (middle) and futures, weather and ETF (right) over same time period trained on pre-October 30, 2013}
+		
+		\caption{Training and testing MSE for futures only (left), futures and weather (middle) and futures, weather and ETF (right) over same time period trained on pre-October 30, 2013}\label{tab:futuresweatherandetf}
 \end{table}
 
 We anticipated that given the output of the weather-included forcast, the addition of more variables together with a shorter time frame would likely not improve predictive score. The introduction of the additional variables didn't seem to harm the predictive outcomes, but didn't improve the values at significant levels. 
 
 \section{Conclusion}
 
-In this paper we reviewed basic concepts within the futures market and developed an intuitive model under which we would be able to forecast the futures contract price. We find the results of this particular forecast to be discouraging to the idea that one can predict futures prices. 
+In this paper, we reviewed basic concepts within the futures market and developed an intuitive model under which we would be able to forecast the futures contract price. We find the results of this particular forecast to be discouraging to the idea that one can predict futures prices. 
 
-If we had to pursue a model that would best predict the price 30 days in advance, our results indicate a feed-forward network would be most adept at training and testing on such values. 
+If we had to pursue a model that would best predict the price 22 working days in advance, our results indicate a feed-forward network would be most adept at training and testing on such values. 
 
 In addition to a model suggestion, we have several other observations of note:
 
